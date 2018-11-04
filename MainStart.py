@@ -1,6 +1,6 @@
-import pygame
-from Constants import LEVEL_SURFACE_PATH
+from pygame.locals import *
 import pygame, os
+from Level import *
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 
@@ -9,16 +9,19 @@ pygame.init()
 mw_width = 800
 mw_height = 600
 
-lvl_width = 0
-lvl_height = 0
-
-mainWindow = pygame.display.set_mode((mw_width, mw_height))
+mainWindow = pygame.display.set_mode((mw_width, mw_height),RESIZABLE)
+mainWindow.fill((22,22,152))
 
 pygame.display.set_caption('Incredible Machine!')
 
-level = pygame.image.load(LEVEL_SURFACE_PATH)
+current_level = Level(1)
+
+level = current_level.create_level()
+level = pygame.transform.scale(level, (650,600))
 
 mainWindow.blit(level,[0,0])
+
+pygame.draw.line(mainWindow, (150,0,0), [650, 600], [650, 0], 5)
 
 run = True
 
@@ -30,6 +33,7 @@ while run:
             run = False
 
     pygame.draw.rect(mainWindow,(255,0,0),(40,40,50,50))
+
     pygame.display.update()
 
 
