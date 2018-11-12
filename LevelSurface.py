@@ -7,44 +7,43 @@ from Button import *
 
 pygame.init()
 
+button_size_x = 200
+button_size_y = 40
+button_play_pos_x = 100
+button_play_pos_y = 520
+button_restart_pos_x = 350
+button_restart_pos_y = 520
+
 class LevelSurface():
 
     def __init__(self,number):
         self.number = number
         self.levels = pd.read_csv(LEVELS_CSV_PATH, delimiter=",")
+        self.button_play = Button(BUTTON_CHECK,20,200,50,button_size_x,button_size_y)
+        self.button_restart = Button(BUTTON_RETRY,40,80,200,button_size_x,button_size_y)
+        self.still_objects_list = []
+        self.movable_objects_list = []
+        self.level_surface = pygame.Surface([800, 600], pygame.SRCALPHA, 32)
+        self.movable_objects_surface = pygame.Surface([200, 600], pygame.SRCALPHA, 32)
 
-    def create_level(self,running):
 
-        surface = pygame.Surface([800, 600], pygame.SRCALPHA, 32)
+    def create_level(self):
 
-        (still_objects_surface, movable_objects_surface) = self.load_objects()
+        (still_objects_surface, self.movable_objects_surface) = self.load_objects()
 
-        surface.blit(still_objects_surface,[0,0])
-        surface.blit(movable_objects_surface, [650, 0])
+        self.level_surface.blit(still_objects_surface,[0,0])
+        self.level_surface.blit(self.movable_objects_surface, [650, 0])
 
-        pygame.draw.line(surface, (150, 0, 0), [650, 600], [650, 0], 5)
-        pygame.draw.line(surface, (150, 0, 0), [0, 500], [650, 500], 5)
+        pygame.draw.line(self.level_surface, (150, 0, 0), [650, 600], [650, 0], 5)
+        pygame.draw.line(self.level_surface, (150, 0, 0), [0, 500], [650, 500], 5)
 
-        button_play = Button("Play",20,200,50,100,40)
-        button_play = button_play.create_button()
+        button_play_surface = self.button_play.create_surface()
+        button_restart_surface = self.button_restart.create_surface()
 
-        button_restart = Button("Restart", 40, 80, 200, 100, 40)
-        button_restart = button_restart.create_button()
+        self.level_surface.blit(button_play_surface, [button_play_pos_x, button_play_pos_y])
+        self.level_surface.blit(button_restart_surface, [button_restart_pos_x, button_restart_pos_y])
 
-        surface.blit(button_play, [200, 520])
-        surface.blit(button_restart, [350, 520])
-
-        while running:
-            for e in pygame.event.get():
-                if e.type == pygame.MOUSEBUTTONUP:
-                    mouse = pygame.mouse.get_pos()
-                    if 200 + 100 > mouse[0] > 200 and 520 + 40 > mouse[1] > 520:
-                        button_play.interact()
-
-                    if 200 + 100 > mouse[0] > 200 and 520 + 40 > mouse[1] > 520:
-                        button_restart.interact()
-
-        return surface
+        return self.level_surface
 
 
     def load_objects(self):
@@ -58,39 +57,37 @@ class LevelSurface():
 
         current_lvl_objects = self.levels[self.levels.lvl_number==self.number]
 
-        still_objects_list = []
-        movable_objects_list = []
 
         for i in range(len(current_lvl_objects)):
             if current_lvl_objects.at[i,'movable']==0:
-                still_objects_list.append(
+                self.still_objects_list.append(
                     GameObject(self.levels.at[i,'item'],self.levels.at[i,'pos_x'],self.levels.at[i,'pos_y']))
             else:
-                movable_objects_list.append(
+                self.movable_objects_list.append(
                     GameObject(self.levels.at[i, 'item'], self.levels.at[i, 'pos_x'], self.levels.at[i, 'pos_y']))
 
 
-        for i in range(len(still_objects_list)):
+        for i in range(len(self.still_objects_list)):
 
-            temp_object = GameObject(still_objects_list[i].type,still_objects_list[i].pos_x,still_objects_list[i].pos_y)
+            temp_object = GameObject(self.still_objects_list[i].type,self.still_objects_list[i].pos_x,self.still_objects_list[i].pos_y)
 
-            if(still_objects_list[i].type=="BALL"):
+            if(self.still_objects_list[i].type=="BALL"):
                 object = ItemBall(temp_object)
 
-            elif(still_objects_list[i].type == "BAR"):
+            elif(self.still_objects_list[i].type == "BAR"):
                 object = ItemBar(temp_object)
 
             still_objects_surface.blit(object.make_image(),[object.pos_x, object.pos_y])
 
 
-        for i in range(len(movable_objects_list)):
+        for i in range(len(self.movable_objects_list)):
 
-            temp_object = GameObject(movable_objects_list[i].type,movable_objects_list[i].pos_x,movable_objects_list[i].pos_y)
+            temp_object = GameObject(self.movable_objects_list[i].type,self.movable_objects_list[i].pos_x,self.movable_objects_list[i].pos_y)
 
-            if(movable_objects_list[i].type=="BALL"):
+            if self.movable_objects_list[i].type=="BALL":
                 object = ItemBall(temp_object)
 
-            elif(movable_objects_list[i].type == "BAR"):
+            elif self.movable_objects_list[i].type == "BAR":
                 object = ItemBar(temp_object)
 
             movable_objects_surface.blit(object.make_image(),[object.pos_x, object.pos_y])
@@ -98,4 +95,35 @@ class LevelSurface():
         return (still_objects_surface,movable_objects_surface)
 
 
+    def check_mouse_pos(self,mouse):
+        if button_play_pos_x + button_size_x > mouse[0] > button_play_pos_x and button_play_pos_y + button_size_y > mouse[1] > button_play_pos_y:
+            self.button_play.interact(self.button_play.title)
 
+        if button_restart_pos_x + button_size_x > mouse[0] > button_restart_pos_x and button_restart_pos_y + button_size_y > mouse[1] > button_restart_pos_y:
+            self.button_restart.interact(self.button_restart.title)
+
+
+    def mouse_clicked(self,mouse):
+        if button_play_pos_x + button_size_x > mouse[0] > button_play_pos_x and button_play_pos_y + button_size_y > mouse[1] > button_play_pos_y:
+            self.button_play.press(self.button_play.title)
+
+        if button_restart_pos_x + button_size_x > mouse[0] > button_restart_pos_x and button_restart_pos_y + button_size_y > mouse[1] > button_restart_pos_y:
+            self.button_restart.press(self.button_restart.title)
+
+
+    def drag_objects(self,mouse):
+        dragging = False
+
+        for i in range(len(self.movable_objects_list)):
+            if self.movable_objects_list[i].collide(mouse):
+                dragging = True
+                return_object = self.movable_objects_list[i]
+
+        return dragging, return_object
+
+
+    #def move_object(self,object,mouse_x,mouse_y,offset_x,offset_y):
+
+        #self.movable_object_surface
+
+        #self.level_surface.blit(self.movable_object_surface, [650, 0])

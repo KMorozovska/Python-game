@@ -1,5 +1,7 @@
+import pygame
 
-class GameObject():
+
+class GameObject(pygame.sprite.Sprite):
 
     def __init__(self,type,pos_x,pos_y):
         self.pos_x = pos_x
@@ -14,6 +16,8 @@ class GameObject():
     def make_surface(self):
         pass
 
+    def collide(self,pos):
+        pass
 
 
 

@@ -1,5 +1,5 @@
 import pygame
-
+from Constants import BUTTON_CHECK,BUTTON_RETRY
 
 class Button():
 
@@ -12,10 +12,10 @@ class Button():
         self.height = height
 
 
-    def create_button(self):
+    def create_surface(self):
 
         border = 2
-        myfont = pygame.font.SysFont("monospace", 15)
+        myfont = pygame.font.SysFont("notosanscjkkr", 15)
 
         surface = pygame.Surface([self.width+2*border,self.height+2*border], pygame.SRCALPHA, 32)
 
@@ -30,7 +30,14 @@ class Button():
 
     def interact(self,type):
 
-        if(type=="PLAY"):
-            print("Hey")
-        elif(type=="RESTART"):
+        if(type==BUTTON_CHECK):
+            print("It works!")
+        elif(type==BUTTON_RETRY):
             print("Restart")
+
+    def press(self, type):
+
+        if (type == BUTTON_CHECK):
+            print("Checking clicked!")
+        elif (type == BUTTON_RETRY):
+            print("Restart clicked")
