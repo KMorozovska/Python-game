@@ -15,7 +15,7 @@ class Button():
     def create_surface(self):
 
         border = 2
-        myfont = pygame.font.SysFont("notosanscjkkr", 15)
+        myfont = pygame.font.SysFont("notosanscjkkr", int(self.width/8))
 
         surface = pygame.Surface([self.width+2*border,self.height+2*border], pygame.SRCALPHA, 32)
 

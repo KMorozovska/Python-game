@@ -1,7 +1,7 @@
 from pygame.locals import *
 import pygame, os
 from LevelSurface import *
-
+from operator import attrgetter
 from StartSurface import *
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
@@ -12,12 +12,13 @@ mw_width = 800
 mw_height = 600
 
 mainWindow = pygame.display.set_mode((mw_width, mw_height),RESIZABLE)
-mainWindow.fill((158,128,128))
+mainWindow.fill((170, 170, 240))
 
 pygame.display.set_caption('Incredible Machine!')
 
 run = True
 started = False
+mouse_held = False
 
 welcome = StartSurface()
 welcome_surf = welcome.create_surface()
@@ -35,37 +36,33 @@ while run:
 
         elif event.type == pygame.MOUSEBUTTONUP:
 
+            mouse_held = False
             pos = pygame.mouse.get_pos()
 
             if welcome.button_clicked(pos):
                 current_level = LevelSurface(i)
                 level_surface = current_level.create_level()
-                mainWindow.fill((158, 128, 128))
+                mainWindow.fill((170, 170, 240))
                 mainWindow.blit(level_surface, [0, 0])
                 started = True
 
             if started:
                 current_level.mouse_clicked(pos)
 
-        #elif event.type == pygame.MOUSEBUTTONDOWN:
+        if event.type == pygame.MOUSEBUTTONDOWN:
 
-            #if event.button == 1:
-                #[dragging, dragged_object] = current_level.drag_objects(event.pos)
+            if started:
+                #print(event.pos)
+                for item in current_level.movable_objects_group:
+                    if item.collide(event.pos) == True:
+                        #print("Yes I am active!!")
+                        current_level.drag_objects(id(item),event.pos)
+                        mouse_held = True
+                        break
 
-                #if dragging:
-                    #mouse_x, mouse_y = event.pos
-                    #offset_x = dragged_object.pos_x - mouse_x
-                    #offset_y = dragged_object.pos_y - mouse_y
-
-
-        #elif event.type == pygame.MOUSEMOTION:
-
-            #if dragging:
-                #mouse_x, mouse_y = event.pos
-                #move_object(dragged_object,mouse_x,mouse_y,offset_x,offset_y)
-                #rectangle.x = mouse_x + offset_x
-                #rectangle.y = mouse_y + offset_y
-
+        if mouse_held:
+            print("still dragging!")
+            current_level.drag_objects(id(item),event.pos)
 
         pygame.display.update()
 

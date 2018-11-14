@@ -3,22 +3,27 @@ from Button import *
 
 pygame.init()
 
-button_size_x = 450
-button_size_y = 100
-button_pos_x = 400
-button_pos_y = 300
+button_size_x = 240
+button_size_y = 120
+button_pos_x = 280
+button_pos_y = 350
+title_pos_x = 20
+title_pos_y = 20
 
 class StartSurface():
 
     def __init__(self):
-        self.button_play = Button(BUTTON_PLAY,20,200,50,button_size_x,button_size_y)
+        self.button_play = Button(BUTTON_PLAY,230,120,140,button_size_x,button_size_y)
 
     def create_surface(self):
         surface = pygame.Surface([800, 600], pygame.SRCALPHA, 32)
 
+        image = pygame.image.load(TITLE_PATH).convert()
+        image_surface = pygame.transform.scale(image, (750, 300))
         button_play_surf = self.button_play.create_surface()
 
         surface.blit(button_play_surf,[button_pos_x,button_pos_y])
+        surface.blit(image_surface, [title_pos_x, title_pos_y])
 
         return surface
 
