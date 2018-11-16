@@ -22,9 +22,12 @@ class ItemBall(GameObject):
         return image
 
     def collide(self,pos):
-        #print("sprawdzanie kolizji - ball")
-        #print(self.pos_x + 650)
-        #print(self.pos_y + 650)
-        if self.pos_x + self.width + 650 > pos[0] > self.pos_x + 650 and self.pos_y + self.height > pos[1] > self.pos_y:
+        if self.pos_x + self.width > pos[0] > self.pos_x and self.pos_y + self.height > pos[1] > self.pos_y:
             print("była kolizja!")
             return True
+
+
+    def update(self):
+        print(self.pos_x, self.pos_y)
+        self.rect.topleft = [self.pos_x,self.pos_y]
+        print(self.rect)

@@ -3,6 +3,7 @@ from Constants import *
 import pandas as pd
 from ItemBall import *
 from ItemBar import *
+from ItemSwitch import *
 from Button import *
 
 pygame.init()
@@ -29,15 +30,21 @@ class LevelSurface():
         self.still_objects_group = pygame.sprite.Group()
         self.movable_objects_group = pygame.sprite.Group()
         self.level_surface = pygame.Surface([800, 600], pygame.SRCALPHA, 32)
+        self.level_beginning_surface = pygame.Surface([800, 600], pygame.SRCALPHA, 32)
         self.movable_objects_surface = pygame.Surface([200, 600], pygame.SRCALPHA, 32)
+        self.still_objects_surface = pygame.Surface([650, 500], pygame.SRCALPHA, 32)
         self.passed = False
 
 
     def create_level(self):
 
-        (still_objects_surface, self.movable_objects_surface) = self.load_objects()
+        print("-----create level -------")
 
-        self.level_surface.blit(still_objects_surface,[0,0])
+        self.level_surface = pygame.Surface([800, 600], pygame.SRCALPHA, 32)
+
+        (self.still_objects_surface, self.movable_objects_surface) = self.load_objects()
+
+        self.level_surface.blit(self.still_objects_surface,[0,0])
         self.level_surface.blit(self.movable_objects_surface, [650, 0])
 
         pygame.draw.line(self.level_surface, (150, 0, 0), [650, 600], [650, 0], 5)
@@ -51,14 +58,25 @@ class LevelSurface():
         self.level_surface.blit(button_restart_surface, [button_restart_pos_x, button_restart_pos_y])
         self.level_surface.blit(button_next_surface, [button_next_pos_x, button_next_pos_y])
 
+        self.still_objects_group.draw(self.level_surface)
+        self.movable_objects_group.draw(self.level_surface)
+
+        self.level_beginning_surface = self.level_surface
+
+        print("----- created level finished -------")
+
         return self.level_surface
 
 
     def load_objects(self):
 
+        print("-----load objects -------")
+
         still_objects_surface = pygame.image.load(LEVEL_SURFACE_PATH).convert()
         still_objects_surface = pygame.transform.scale(still_objects_surface,(650,500))
         still_objects_surface = still_objects_surface.convert_alpha()
+
+        movable_objects_surface = pygame.Surface([200, 600], pygame.SRCALPHA, 32)
 
         current_lvl_objects = self.levels[self.levels.lvl_number==self.number]
 
@@ -77,11 +95,12 @@ class LevelSurface():
 
             if(self.still_objects_list[i].type=="BALL"):
                 object = ItemBall(temp_object)
-                object.depth = 20
 
             elif(self.still_objects_list[i].type == "BAR"):
                 object = ItemBar(temp_object)
-                object.depth = 20
+
+            elif (self.still_objects_list[i].type == "SWITCH"):
+                object = ItemSwitch(temp_object)
 
             self.still_objects_group.add(object)
 
@@ -97,10 +116,7 @@ class LevelSurface():
 
             self.movable_objects_group.add(object)
 
-        self.still_objects_group.draw(still_objects_surface)
-        self.movable_objects_group.draw(self.movable_objects_surface)
-
-        return (still_objects_surface,self.movable_objects_surface)
+        return (still_objects_surface,movable_objects_surface)
 
 
     def check_mouse_pos(self,mouse):
@@ -114,9 +130,11 @@ class LevelSurface():
     def mouse_clicked(self,mouse):
         if button_play_pos_x + button_size_x > mouse[0] > button_play_pos_x and button_play_pos_y + button_size_y > mouse[1] > button_play_pos_y:
             self.button_play.press(self.button_play.title)
+            return 1
 
         if button_restart_pos_x + button_size_x > mouse[0] > button_restart_pos_x and button_restart_pos_y + button_size_y > mouse[1] > button_restart_pos_y:
-            self.button_restart.press(self.button_restart.title)
+            self.button_restart.press(self.button_restart.title,self)
+            return 2
 
 
     def drag_objects(self,item_id,mouse):
@@ -124,7 +142,17 @@ class LevelSurface():
         for item in self.movable_objects_group:
             if(id(item) == item_id):
                 print("tak, jest taki obiekt")
+                #print(mouse[0],mouse[1])
+
                 item.pos_x = mouse[0]
                 item.pos_y = mouse[1]
+                item.update()
+                #print(item.rect)
+
+                self.movable_objects_group.clear(self.level_surface,self.level_beginning_surface)
                 self.movable_objects_group.update()
-        self.movable_objects_group.draw(self.movable_objects_surface)
+                self.movable_objects_group.draw(self.level_beginning_surface)
+                self.movable_objects_group.update()
+
+                return self.movable_objects_group
+

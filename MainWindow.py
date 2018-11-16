@@ -25,6 +25,7 @@ welcome_surf = welcome.create_surface()
 mainWindow.blit(welcome_surf,[0,0])
 
 i=1
+current_level = LevelSurface(i)
 
 while run:
     pygame.time.delay(5)
@@ -40,29 +41,36 @@ while run:
             pos = pygame.mouse.get_pos()
 
             if welcome.button_clicked(pos):
-                current_level = LevelSurface(i)
                 level_surface = current_level.create_level()
                 mainWindow.fill((170, 170, 240))
                 mainWindow.blit(level_surface, [0, 0])
                 started = True
 
             if started:
-                current_level.mouse_clicked(pos)
+                which_button = current_level.mouse_clicked(pos)
+                if which_button == 2:
+                    mainWindow.blit(current_level.create_level(), [0, 0])
+                    pygame.display.update()
+
 
         if event.type == pygame.MOUSEBUTTONDOWN:
 
             if started:
-                #print(event.pos)
+
                 for item in current_level.movable_objects_group:
                     if item.collide(event.pos) == True:
-                        #print("Yes I am active!!")
-                        current_level.drag_objects(id(item),event.pos)
+                        temp = current_level.drag_objects(id(item),event.pos)
+                        temp.draw(mainWindow)
                         mouse_held = True
                         break
 
         if mouse_held:
             print("still dragging!")
-            current_level.drag_objects(id(item),event.pos)
+            temp = current_level.drag_objects(id(item),event.pos)
+            temp.draw(mainWindow)
+            #temp.empty()
+            #temp.clear(mainWindow, mainWindow)
+            #temp.update()
 
         pygame.display.update()
 
