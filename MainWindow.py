@@ -49,7 +49,7 @@ while run:
             if started:
                 which_button = current_level.mouse_clicked(pos)
                 if which_button == 2:
-                    mainWindow.blit(current_level.create_level(), [0, 0])
+                    mainWindow.blit(current_level.level_restart_surface, [0, 0])
                     pygame.display.update()
 
 
@@ -58,19 +58,14 @@ while run:
             if started:
 
                 for item in current_level.movable_objects_group:
-                    if item.collide(event.pos) == True:
-                        temp = current_level.drag_objects(id(item),event.pos)
-                        temp.draw(mainWindow)
+                    if item.rect.collidepoint(event.pos) == True:
                         mouse_held = True
                         break
 
         if mouse_held:
-            print("still dragging!")
-            temp = current_level.drag_objects(id(item),event.pos)
-            temp.draw(mainWindow)
-            #temp.empty()
-            #temp.clear(mainWindow, mainWindow)
-            #temp.update()
+            current_level.drag_objects(id(item),event.pos)
+            mainWindow.blit(current_level.level_surface,[0,0])
+
 
         pygame.display.update()
 

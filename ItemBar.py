@@ -19,18 +19,5 @@ class ItemBar(GameObject):
 
 
 
-    def make_image(self):
-        image = pygame.image.load(IMAGE_BAR_PATH)
-        image = pygame.transform.scale(image,(self.width,self.height))
-        return image
-
-    def collide(self,pos):
-        if self.pos_x + self.width > pos[0] > self.pos_x and self.pos_y + self.height > pos[1] > self.pos_y:
-            print("Była kolizja!!!?????????????????????")
-            return True
-
     def update(self):
-        print("Czemu ??????????????????????")
-        print(self.pos_x, self.pos_y)
         self.rect.topleft = [self.pos_x,self.pos_y]
-        print(self.rect)

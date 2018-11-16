@@ -11,18 +11,13 @@ class ItemSwitch(GameObject):
         self.width = 70
         self.height = 70
         self.type = gameObject.type
-        self.pos_x = gameObject.pos_x
-        self.pos_y = gameObject.pos_y
         self.depth = gameObject.depth
         self.image = pygame.transform.scale((pygame.image.load(IMAGE_SWITCH_PATH).convert_alpha()),(self.width,self.height))
-        self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y))
+        self.rect = self.image.get_rect()
+        self.rect.x = gameObject.pos_x
+        self.rect.y = gameObject.pos_y
 
 
-
-    def make_image(self):
-        image = pygame.image.load(IMAGE_SWITCH_PATH)
-        image = pygame.transform.scale(image,(self.width,self.height))
-        return image
 
     def collide(self,pos):
         if self.pos_x + self.width > pos[0] > self.pos_x and self.pos_y + self.height > pos[1] > self.pos_y:
