@@ -9,6 +9,7 @@ class GameObject(pygame.sprite.Sprite):
         self.pos_y = pos_y
         self.type = type
         self.depth = random.randint(1, 11)
+        self.was_moved = False
 
 
     def __repr__(self):
@@ -18,11 +19,18 @@ class GameObject(pygame.sprite.Sprite):
     def make_surface(self):
         pass
 
-    def collide(self,pos):
-        pass
+    def check_mouse_collision(self,pos):
+        if self.pos_x + self.width > pos[0] > self.pos_x and self.pos_y + self.height > pos[1] > self.pos_y:
+            return True
 
-    def update(self):
-        self.mouse_coordinates = pygame.mouse.get_pos()
-        if self.rect.collidepoint(self.mouse_coordinates) == True:
-            self.rect.centerx = self.mouse_coordinates[0]
-            self.rect.centery = self.mouse_coordinates[1]
+    def move_with_mouse(self):
+        if self.pos_x > self.width/4 and self.pos_x < 800 and self.pos_y > self.height/4 and self.pos_y < 600-self.height/4:
+            self.rect.topleft = [self.pos_x,self.pos_y]
+        else:
+            return
+
+    def check_position(self):
+        if self.rect.top < 0 or self.rect.bottom > 500 or self.rect.left < 0 or self.rect.right > 650:
+            self.was_moved = False
+        else:
+            self.was_moved = True

@@ -1,8 +1,8 @@
 from GameObject import *
-from Constants import IMAGE_BALL_PATH
+from Constants import IMAGE_BASKETBALL_PATH
 import pygame
 
-class ItemBall(GameObject):
+class ItemBasketBall(GameObject):
 
     def __init__(self,gameObject):
         super(GameObject, self).__init__()
@@ -13,7 +13,7 @@ class ItemBall(GameObject):
         self.pos_x = gameObject.pos_x
         self.pos_y = gameObject.pos_y
         self.depth = gameObject.depth
-        self.image = pygame.transform.scale((pygame.image.load(IMAGE_BALL_PATH).convert_alpha()),(self.width,self.height))
+        self.image = pygame.transform.scale((pygame.image.load(IMAGE_BASKETBALL_PATH).convert_alpha()),(self.width,self.height))
         self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y))
         self.speedx = 0
         self.speedy = 1

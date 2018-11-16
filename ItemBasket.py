@@ -1,8 +1,8 @@
 from GameObject import *
 import pygame
-from Constants import IMAGE_SWITCH_PATH
+from Constants import IMAGE_BASKET_PATH
 
-class ItemSwitch(GameObject):
+class ItemBasket(GameObject):
 
 
     def __init__(self,gameObject):
@@ -11,12 +11,11 @@ class ItemSwitch(GameObject):
         self.width = 70
         self.height = 70
         self.type = gameObject.type
+        self.pos_x = gameObject.pos_x
+        self.pos_y = gameObject.pos_y
         self.depth = gameObject.depth
-        self.image = pygame.transform.scale((pygame.image.load(IMAGE_SWITCH_PATH).convert_alpha()),(self.width,self.height))
-        self.rect = self.image.get_rect()
-        self.rect.x = gameObject.pos_x
-        self.rect.y = gameObject.pos_y
-
+        self.image = pygame.transform.scale((pygame.image.load(IMAGE_BASKET_PATH).convert_alpha()),(self.width,self.height))
+        self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y))
 
 
     def collide(self,pos):
@@ -25,6 +24,4 @@ class ItemSwitch(GameObject):
             return True
 
     def update(self):
-        print(self.pos_x, self.pos_y)
-        self.rect.topleft = [self.pos_x,self.pos_y]
-        print(self.rect)
+        print("pass")

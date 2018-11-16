@@ -3,7 +3,11 @@ from Constants import *
 import pandas as pd
 from ItemBall import *
 from ItemBar import *
-from ItemSwitch import *
+from ItemBasket import *
+from ItemBasketBall import *
+from ItemBalloon import *
+from ItemBricks import *
+
 from Button import *
 
 pygame.init()
@@ -37,6 +41,8 @@ class LevelSurface():
 
         print("-----create level -------")
 
+        self.level_beginning_surface.fill((170, 170, 240))
+
         (still_beginning_objects, moving_beginning_objects) = self.load_objects()
 
         still_objects_surface = pygame.image.load(LEVEL_SURFACE_PATH).convert()
@@ -45,7 +51,6 @@ class LevelSurface():
 
         movable_objects_surface = pygame.Surface([200, 600], pygame.SRCALPHA, 32)
         movable_objects_surface = movable_objects_surface.convert_alpha()
-        movable_objects_surface.fill((170, 170, 240))
 
         self.level_beginning_surface.blit(still_objects_surface,[0,0])
         self.level_beginning_surface.blit(movable_objects_surface, [650, 0])
@@ -103,14 +108,23 @@ class LevelSurface():
 
             temp_object = GameObject(still_objects_list[i].type,still_objects_list[i].pos_x,still_objects_list[i].pos_y)
 
-            if(still_objects_list[i].type=="BALL"):
+            if still_objects_list[i].type=="BALL":
                 object = ItemBall(temp_object)
 
-            elif(still_objects_list[i].type == "BAR"):
+            elif still_objects_list[i].type=="BASKETBALL":
+                object = ItemBasketBall(temp_object)
+
+            elif still_objects_list[i].type == "BAR":
                 object = ItemBar(temp_object)
 
-            elif (still_objects_list[i].type == "SWITCH"):
-                object = ItemSwitch(temp_object)
+            elif still_objects_list[i].type == "BALLOON":
+                object = ItemBar(temp_object)
+
+            elif still_objects_list[i].type == "BRICKS":
+                object = ItemBar(temp_object)
+
+            elif still_objects_list[i].type == "BASKET":
+                object = ItemBasket(temp_object)
 
             still_objects_group.add(object)
 
@@ -121,8 +135,18 @@ class LevelSurface():
             if movable_objects_list[i].type=="BALL":
                 object = ItemBall(temp_object)
 
+            elif movable_objects_list[i].type=="BASKETBALL":
+                object = ItemBasketBall(temp_object)
+
             elif movable_objects_list[i].type == "BAR":
                 object = ItemBar(temp_object)
+
+            elif movable_objects_list[i].type == "BALLOON":
+                object = ItemBalloon(temp_object)
+
+            elif movable_objects_list[i].type == "BRICKS":
+                object = ItemBricks(temp_object)
+
 
             movable_objects_group.add(object)
 
@@ -139,11 +163,11 @@ class LevelSurface():
 
     def mouse_clicked(self,mouse):
         if button_play_pos_x + button_size_x > mouse[0] > button_play_pos_x and button_play_pos_y + button_size_y > mouse[1] > button_play_pos_y:
-            self.button_play.press(self.button_play.title)
+            #self.button_play.press(self.button_play.title,self)
             return 1
 
         if button_restart_pos_x + button_size_x > mouse[0] > button_restart_pos_x and button_restart_pos_y + button_size_y > mouse[1] > button_restart_pos_y:
-            self.button_restart.press(self.button_restart.title,self)
+            #self.button_restart.press(self.button_restart.title,self)
             return 2
 
 
@@ -154,9 +178,43 @@ class LevelSurface():
 
                 item.pos_x = mouse[0]-(item.rect.width/2)
                 item.pos_y = mouse[1]-(item.rect.height/2)
-                item.update()
+                item.move_with_mouse()
 
         self.movable_objects_group.clear(self.level_surface,self.level_beginning_surface)
-        self.movable_objects_group.update()
         self.movable_objects_group.draw(self.level_surface)
-        self.movable_objects_group.update()
+
+
+    def move_everything(self):
+
+        print("powinno sie ruszac caly czas")
+
+        all_objects_group = pygame.sprite.Group()
+
+        still_checking = True
+
+        for item in self.still_objects_group:
+            if (item.type != "BASKET"):
+                all_objects_group.add(item)
+
+        for item in self.movable_objects_group:
+            all_objects_group.add(item)
+
+        for item in all_objects_group:
+            all_objects_group.remove(item)
+            if item.collide(all_objects_group):
+                item.react_to_collision(id(item))
+            item.move()
+            if(item.type == "BASKETBALL"):
+                still_checking = item.move()
+            all_objects_group.add(item)
+
+        return all_objects_group, still_checking
+
+
+    def restart(self):
+        self.still_objects_group.empty()
+        self.movable_objects_group.empty()
+        self.level_surface = self.level_beginning_surface.copy()
+        (self.still_objects_group,self.movable_objects_group) = self.load_objects()
+
+

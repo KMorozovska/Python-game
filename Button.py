@@ -27,18 +27,3 @@ class Button():
 
         return surface
 
-
-    def interact(self,type):
-
-        if(type==BUTTON_CHECK):
-            print("It works!")
-        elif(type==BUTTON_RETRY):
-            print("Restart")
-
-    def press(self,type,level):
-
-        if (type == BUTTON_CHECK):
-            print("Checking clicked!")
-        elif (type == BUTTON_RETRY):
-            print("Restart clicked")
-            #level.level_surface = level.level_beginning_surface
