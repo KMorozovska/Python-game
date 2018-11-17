@@ -1,5 +1,5 @@
 from GameObject import *
-from Constants import IMAGE_BASKETBALL_PATH, ITEM_BAR_WIDTH, ITEM_BASKETBALL_HEIGHT, ITEM_BASKETBALL_WIDTH, ITEM_BRICKS_HEIGHT
+from Constants import IMAGE_BASKETBALL_PATH, ITEM_BAR_WIDTH, ITEM_BASKETBALL_HEIGHT, ITEM_BASKETBALL_WIDTH, ITEM_BRICKS_HEIGHT, ITEM_BRICKS_WIDTH
 import pygame
 
 class ItemBasketBall(GameObject):
@@ -55,8 +55,15 @@ class ItemBasketBall(GameObject):
     def react_to_collision(self, gameObject):
 
         if gameObject.type == "BRICKS":
+
             self.pos_y = gameObject.pos_y-ITEM_BRICKS_HEIGHT
             self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y))
+
+            if self.pos_y == gameObject.pos_y-ITEM_BRICKS_HEIGHT and self.pos_x == gameObject.pos_x+ITEM_BRICKS_WIDTH/2:
+                self.pos_x = gameObject.pos_x+ITEM_BRICKS_WIDTH/2
+                self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y))
+            return True
+
 
         if gameObject.type == "BAR":
             if self.pos_x == gameObject.pos_x - ITEM_BAR_WIDTH/2:
@@ -67,6 +74,8 @@ class ItemBasketBall(GameObject):
             elif self.pos_x < gameObject.pos_x - ITEM_BAR_WIDTH/2:
                 self.pos_x -= 1
                 self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y))
+            return False
 
         if gameObject.type == "BASKET":
             print("Congratulations you won !!!! ")
+            return True

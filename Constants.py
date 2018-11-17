@@ -15,6 +15,7 @@ BUTTON_PLAY = "Start!"
 BUTTON_CHECK = "See how it works!"
 BUTTON_RETRY = "Restart level"
 BUTTON_NEXT = "Open next level"
+BUTTON_INFO = "Instructions"
 
 ITEM_BASKET_WIDTH = 70
 ITEM_BASKET_HEIGHT = 70

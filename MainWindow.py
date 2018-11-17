@@ -21,6 +21,8 @@ run = True
 started = False
 mouse_held = False
 checking_level = False
+passed = False
+failed = False
 
 welcome = StartSurface()
 welcome_surf = welcome.create_surface()
@@ -30,7 +32,6 @@ i=1
 current_level = LevelSurface(i)
 
 while run:
-    #pygame.time.delay(5)
 
     for event in pygame.event.get():
 
@@ -77,11 +78,29 @@ while run:
             mainWindow.blit(current_level.level_surface,[0,0])
 
     if checking_level:
-        checking_level = current_level.move_everything()
+        (checking_level, passed, failed) = current_level.move_everything()
         current_level.movable_objects_group.clear(mainWindow, current_level.level_empty_surface)
         current_level.still_objects_group.clear(mainWindow, current_level.level_empty_surface)
         current_level.all_objects_group.clear(mainWindow, current_level.level_empty_surface)
         current_level.all_objects_group.draw(mainWindow)
+
+
+    if passed:
+        Tk().wm_withdraw()
+        messagebox.showinfo('Wow!', 'Congratulations, you did it!')
+        i += 1
+        passed = False
+        current_level = LevelSurface(i)
+
+    if failed:
+        Tk().wm_withdraw()
+        messagebox.showinfo('Oops', 'Level failed - try again!')
+        current_level.movable_objects_group.clear(mainWindow, current_level.level_empty_surface)
+        current_level.still_objects_group.clear(mainWindow, current_level.level_empty_surface)
+        current_level.all_objects_group.clear(mainWindow, current_level.level_empty_surface)
+        current_level.restart()
+        mainWindow.blit(current_level.level_empty_surface, [0, 0])
+        failed = False
 
     pygame.display.update()
 

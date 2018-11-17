@@ -194,6 +194,8 @@ class LevelSurface():
     def move_everything(self):
 
         still_checking = True
+        passed = False
+        failed = False
 
         for item in self.all_objects_group:
             self.all_objects_group.remove(item)
@@ -202,19 +204,25 @@ class LevelSurface():
                 collided_object = item.collide(self.all_objects_group)
                 item.react_to_collision(collided_object[0])
 
+                if item.react_to_collision(collided_object[0]) and collided_object[0].type == "BASKET":
+                    passed = True
+                if item.react_to_collision(collided_object[0]) and collided_object[0].type == "BRICKS":
+                    failed = True
+
             item.move()
             if item.type == "BASKETBALL":
                 still_checking = item.move()
 
             self.all_objects_group.add(item)
 
-        return still_checking
+        return still_checking, passed, failed
 
 
     def restart(self):
         self.still_objects_group.empty()
         self.movable_objects_group.empty()
-        self.level_surface = self.level_beginning_surface.copy()
+        self.all_objects_group.empty()
+        self.level_surface = self.level_restart_surface.copy()
         (self.still_objects_group,self.movable_objects_group) = self.load_objects()
 
 
