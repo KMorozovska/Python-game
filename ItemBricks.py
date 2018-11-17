@@ -22,7 +22,7 @@ class ItemBricks(GameObject):
 
 
     def move(self):
-        print("ruszam sie - bricks")
+        pass
 
 
     def update(self):
@@ -35,4 +35,4 @@ class ItemBricks(GameObject):
 
     def collide(self,spriteGroup):
         if pygame.sprite.spritecollide(self,spriteGroup,False):
-            print("byla kolizja z cegielkami")
+            pass

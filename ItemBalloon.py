@@ -1,6 +1,6 @@
 from GameObject import *
 import pygame
-from Constants import IMAGE_BALLOON_PATH
+from Constants import IMAGE_BALLOON_PATH, ITEM_BALLOON_WIDTH, ITEM_BALLOON_HEIGHT, ITEM_BAR_WIDTH, ITEM_BRICKS_HEIGHT
 
 class ItemBalloon(GameObject):
 
@@ -8,8 +8,8 @@ class ItemBalloon(GameObject):
     def __init__(self,gameObject):
         super(GameObject, self).__init__()
         pygame.sprite.Sprite.__init__(self)  # call Sprite intializer
-        self.width = 50
-        self.height = 120
+        self.width = ITEM_BALLOON_WIDTH
+        self.height = ITEM_BALLOON_HEIGHT
         self.type = gameObject.type
         self.pos_x = gameObject.pos_x
         self.pos_y = gameObject.pos_y
@@ -22,8 +22,6 @@ class ItemBalloon(GameObject):
 
 
     def move(self):
-        print("ruszam sie - balloon")
-
         if self.pos_y <= 0:
             return
 
@@ -40,6 +38,27 @@ class ItemBalloon(GameObject):
         if self.rect.left < 0 or self.rect.right > 800:
             return
 
-    def collide(self,spriteGroup):
-        if pygame.sprite.spritecollide(self,spriteGroup,False):
-            print("byla kolizja")
+    def collide(self, spriteGroup):
+        if pygame.sprite.spritecollide(self, spriteGroup, False):
+            collided_object = pygame.sprite.spritecollide(self, spriteGroup, False)
+            return collided_object
+
+
+    def react_to_collision(self, gameObject):
+        if gameObject.type == "BRICKS":
+            self.pos_y = gameObject.pos_y-ITEM_BRICKS_HEIGHT
+            self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y))
+
+        if gameObject.type == "BAR":
+            if self.pos_x == gameObject.pos_x - ITEM_BAR_WIDTH / 2:
+                self.pos_y = gameObject.pos_y
+                self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y))
+            if self.pos_x > gameObject.pos_x - ITEM_BAR_WIDTH / 2:
+                gameObject.react_to_collision(self)
+                self.pos_y = gameObject.pos_y
+                self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y))
+            if self.pos_x < gameObject.pos_x - ITEM_BAR_WIDTH / 2:
+                gameObject.react_to_collision(self)
+                self.pos_y = gameObject.pos_y
+                self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y))
+

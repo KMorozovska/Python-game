@@ -1,12 +1,12 @@
 from GameObject import *
-from Constants import ITEM_BALL_HEIGHT, ITEM_BALL_WIDTH, IMAGE_BALL_PATH,ITEM_BAR_WIDTH, ITEM_BRICKS_HEIGHT
+from Constants import *
 import pygame
 
 class ItemBall(GameObject):
 
     def __init__(self,gameObject):
         super(GameObject, self).__init__()
-        pygame.sprite.Sprite.__init__(self)  # call Sprite intializer
+        pygame.sprite.Sprite.__init__(self)
         self.width = ITEM_BALL_WIDTH
         self.height = ITEM_BALL_HEIGHT
         self.type = gameObject.type
@@ -20,8 +20,6 @@ class ItemBall(GameObject):
         self.was_moved = False
 
     def move(self):
-        print("ruszam sie - ball")
-
         if self.pos_y >= 500 - ITEM_BALL_HEIGHT:
             return
 
@@ -45,25 +43,23 @@ class ItemBall(GameObject):
     def collide(self,spriteGroup):
         if pygame.sprite.spritecollide(self,spriteGroup,False):
             collided_object = pygame.sprite.spritecollide(self,spriteGroup,False)
-            print("byla kolizja pilki z czyms")
-            print(collided_object)
             return collided_object
 
 
     def react_to_collision(self,gameObject):
 
         if gameObject.type == "BRICKS":
-            self.pos_y = gameObject.pos_y-ITEM_BRICKS_HEIGHT
+            self.pos_y = gameObject.pos_y-ITEM_BRICKS_HEIGHT-ITEM_BALL_HEIGHT/2
             self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y))
 
         if gameObject.type == "BAR":
-            if self.pos_x == gameObject.pos_x - ITEM_BAR_WIDTH/2:
-                pass
-            elif self.pos_x > gameObject.pos_x - ITEM_BAR_WIDTH/2:
-                self.pos_x += 1
+            if self.pos_x >= gameObject.pos_x - ITEM_BAR_WIDTH/2:
+                gameObject.react_to_collision(self)
+                self.pos_y = gameObject.pos_y - ITEM_BALL_HEIGHT/2
                 self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y))
             elif self.pos_x < gameObject.pos_x - ITEM_BAR_WIDTH/2:
-                self.pos_x -= 1
+                gameObject.react_to_collision(self)
+                self.pos_y = gameObject.pos_y - ITEM_BALL_HEIGHT/2
                 self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y))
 
 

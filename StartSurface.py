@@ -8,9 +8,9 @@ pygame.init()
 
 button_size_x = 160
 button_size_y = 80
-button_play_pos_x = 190
+button_play_pos_x = 130
 button_play_pos_y = 350
-button_info_pos_x = 420
+button_info_pos_x = 340
 button_info_pos_y = 350
 title_pos_x = 20
 title_pos_y = 20
@@ -19,7 +19,7 @@ class StartSurface():
 
     def __init__(self):
         self.button_play = Button(BUTTON_PLAY,230,120,140,button_size_x,button_size_y)
-        self.button_info = Button(BUTTON_INFO,230,120,240,button_size_x, button_size_y)
+        self.button_info = Button(BUTTON_INFO,230,120,240,2*button_size_x, button_size_y)
 
     def create_surface(self):
         surface = pygame.Surface([800, 600], pygame.SRCALPHA, 32)

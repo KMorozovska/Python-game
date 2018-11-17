@@ -1,12 +1,12 @@
 from GameObject import *
-from Constants import IMAGE_BASKETBALL_PATH, ITEM_BAR_WIDTH, ITEM_BASKETBALL_HEIGHT, ITEM_BASKETBALL_WIDTH, ITEM_BRICKS_HEIGHT, ITEM_BRICKS_WIDTH
+from Constants import *
 import pygame
 
 class ItemBasketBall(GameObject):
 
     def __init__(self,gameObject):
         super(GameObject, self).__init__()
-        pygame.sprite.Sprite.__init__(self)  # call Sprite intializer
+        pygame.sprite.Sprite.__init__(self)
         self.width = ITEM_BASKETBALL_WIDTH
         self.height = ITEM_BASKETBALL_HEIGHT
         self.type = gameObject.type
@@ -20,17 +20,11 @@ class ItemBasketBall(GameObject):
         self.was_moved = False
 
     def move(self):
-        print("ruszam sie - ball")
         self.pos_x += self.speedx
         self.pos_y += self.speedy
         self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y))
 
-        print("-------------")
-        print(id(self))
-        print(self.pos_y)
-
         if self.rect.bottom >= 500:
-            print("koniec ruszania")
             return False
         else:
             return True
@@ -47,8 +41,6 @@ class ItemBasketBall(GameObject):
     def collide(self, spriteGroup):
         if pygame.sprite.spritecollide(self, spriteGroup, False):
             collided_object = pygame.sprite.spritecollide(self, spriteGroup, False)
-            print("byla kolizja pilki do kosza")
-            print(collided_object)
             return collided_object
 
 
@@ -56,7 +48,7 @@ class ItemBasketBall(GameObject):
 
         if gameObject.type == "BRICKS":
 
-            self.pos_y = gameObject.pos_y-ITEM_BRICKS_HEIGHT
+            self.pos_y = gameObject.pos_y-ITEM_BRICKS_HEIGHT-ITEM_BASKETBALL_HEIGHT/2
             self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y))
 
             if self.pos_y == gameObject.pos_y-ITEM_BRICKS_HEIGHT and self.pos_x == gameObject.pos_x+ITEM_BRICKS_WIDTH/2:
@@ -64,18 +56,21 @@ class ItemBasketBall(GameObject):
                 self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y))
             return True
 
-
         if gameObject.type == "BAR":
-            if self.pos_x == gameObject.pos_x - ITEM_BAR_WIDTH/2:
-                pass
-            elif self.pos_x > gameObject.pos_x - ITEM_BAR_WIDTH/2:
-                self.pos_x += 1
+
+            if gameObject.already_reacted:
+                if self.pos_x >= gameObject.pos_x-(ITEM_BAR_WIDTH/2):
+                    self.pos_x += 1
+                    self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y))
+                elif self.pos_x < gameObject.pos_x-(ITEM_BAR_WIDTH/2):
+                    self.pos_x += -1
+                    self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y))
+            else:
+                self.pos_y = gameObject.pos_y - ITEM_BAR_HEIGHT - ITEM_BASKETBALL_HEIGHT/2
                 self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y))
-            elif self.pos_x < gameObject.pos_x - ITEM_BAR_WIDTH/2:
-                self.pos_x -= 1
-                self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y))
-            return False
+                return True
 
         if gameObject.type == "BASKET":
-            print("Congratulations you won !!!! ")
-            return True
+            if (self.pos_y > (gameObject.pos_y)-5 or self.pos_y < (gameObject.pos_y)+5) and (self.pos_x > gameObject.pos_x-5 or self.pos_x < gameObject.pos_x+5):
+                return True
+

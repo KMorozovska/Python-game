@@ -12,14 +12,13 @@ from Button import *
 
 pygame.init()
 
-button_size_x = 160
+button_size_x = 250
 button_size_y = 40
-button_play_pos_x = 20
+button_play_pos_x = 60
 button_play_pos_y = 520
-button_restart_pos_x = 200
+button_restart_pos_x = 350
 button_restart_pos_y = 520
-button_next_pos_x = 430
-button_next_pos_y = 520
+
 
 class LevelSurface():
 
@@ -28,7 +27,6 @@ class LevelSurface():
         self.levels = pd.read_csv(LEVELS_CSV_PATH, delimiter=",")
         self.button_play = Button(BUTTON_CHECK,20,200,50,button_size_x,button_size_y)
         self.button_restart = Button(BUTTON_RETRY,40,80,200,button_size_x,button_size_y)
-        self.button_next = Button(BUTTON_NEXT, 128, 128, 128, button_size_x, button_size_y)
         self.still_objects_group = pygame.sprite.Group()
         self.movable_objects_group = pygame.sprite.Group()
         self.all_objects_group = pygame.sprite.Group()
@@ -62,11 +60,9 @@ class LevelSurface():
 
         button_play_surface = self.button_play.create_surface()
         button_restart_surface = self.button_restart.create_surface()
-        button_next_surface = self.button_next.create_surface()
 
         self.level_beginning_surface.blit(button_play_surface, [button_play_pos_x, button_play_pos_y])
         self.level_beginning_surface.blit(button_restart_surface, [button_restart_pos_x, button_restart_pos_y])
-        self.level_beginning_surface.blit(button_next_surface, [button_next_pos_x, button_next_pos_y])
 
         self.level_empty_surface = self.level_beginning_surface.copy()
 
@@ -92,7 +88,10 @@ class LevelSurface():
 
         print("-----load objects -------")
 
-        current_lvl_objects = self.levels[self.levels.lvl_number==self.number]
+        current_lvl_objects = self.levels[self.levels.lvl_number == self.number]
+        current_lvl_objects.reset_index(inplace=1)
+
+        print(self.number)
 
         still_objects_group = pygame.sprite.Group()
         movable_objects_group = pygame.sprite.Group()
@@ -123,10 +122,10 @@ class LevelSurface():
                 object = ItemBar(temp_object)
 
             elif still_objects_list[i].type == "BALLOON":
-                object = ItemBar(temp_object)
+                object = ItemBalloon(temp_object)
 
             elif still_objects_list[i].type == "BRICKS":
-                object = ItemBar(temp_object)
+                object = ItemBricks(temp_object)
 
             elif still_objects_list[i].type == "BASKET":
                 object = ItemBasket(temp_object)
@@ -207,6 +206,8 @@ class LevelSurface():
                 if item.react_to_collision(collided_object[0]) and collided_object[0].type == "BASKET":
                     passed = True
                 if item.react_to_collision(collided_object[0]) and collided_object[0].type == "BRICKS":
+                    failed = True
+                if item.react_to_collision(collided_object[0]) and collided_object[0].type == "BAR":
                     failed = True
 
             item.move()
