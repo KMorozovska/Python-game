@@ -24,6 +24,10 @@ checking_level = False
 passed = False
 failed = False
 
+winning_sound = pygame.mixer.Sound(SOUND_WINNING_PATH)
+failed_sound = pygame.mixer.Sound(SOUND_FAIL_PATH)
+welcome_sound = pygame.mixer.Sound(SOUND_WELCOME_PATH)
+
 welcome = StartSurface()
 welcome_surf = welcome.create_surface()
 mainWindow.blit(welcome_surf,[0,0])
@@ -44,6 +48,7 @@ while run:
             pos = pygame.mouse.get_pos()
 
             if not started and welcome.button_clicked(pos):
+                welcome_sound.play()
                 level_surface = current_level.create_level()
                 mainWindow.fill((170, 170, 240))
                 mainWindow.blit(level_surface, [0, 0])
@@ -70,7 +75,6 @@ while run:
         if event.type == pygame.MOUSEBUTTONDOWN:
 
             if started:
-                print(len(current_level.movable_objects_group))
                 for item in current_level.movable_objects_group:
                     if item.check_mouse_collision(event.pos):
                         mouse_held = True
@@ -88,19 +92,25 @@ while run:
         current_level.all_objects_group.draw(mainWindow)
 
     if passed:
+        winning_sound.play()
         Tk().wm_withdraw()
         messagebox.showinfo('Wow!', 'Congratulations, you did it!')
         lvl_number += 1
-        passed = False
         checking_level = False
+        failed = False
+        current_level.movable_objects_group.clear(mainWindow, current_level.level_empty_surface)
+        current_level.still_objects_group.clear(mainWindow, current_level.level_empty_surface)
+        current_level.all_objects_group.clear(mainWindow, current_level.level_empty_surface)
+        current_level.destroy()
+        mainWindow.fill((170, 170, 240))
         del current_level
         started = True
         current_level = LevelSurface(lvl_number)
-        new_level_surface = current_level.create_level()
-        mainWindow.fill((170, 170, 240))
-        mainWindow.blit(new_level_surface, [0, 0])
+        mainWindow.blit(current_level.create_level(), [0, 0])
+        passed = False
 
     if failed:
+        failed_sound.play()
         Tk().wm_withdraw()
         messagebox.showinfo('Oops', 'Level failed - try again!')
         current_level.movable_objects_group.clear(mainWindow, current_level.level_empty_surface)
@@ -111,6 +121,6 @@ while run:
         failed = False
         checking_level = False
 
-    pygame.display.update()
+    pygame.display.flip()
 
 pygame.quit()

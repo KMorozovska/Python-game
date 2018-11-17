@@ -1,12 +1,14 @@
 import pygame
 from Constants import *
 import pandas as pd
-from ItemBall import *
+from ItemWeight import *
 from ItemBar import *
 from ItemBasket import *
 from ItemBasketBall import *
 from ItemBalloon import *
 from ItemBricks import *
+from tkinter import *
+from tkinter import messagebox
 
 from Button import *
 
@@ -39,8 +41,6 @@ class LevelSurface():
 
     def create_level(self):
 
-        print("-----create level -------")
-
         self.level_beginning_surface.fill((170, 170, 240))
 
         (still_beginning_objects, moving_beginning_objects) = self.load_objects()
@@ -51,6 +51,12 @@ class LevelSurface():
 
         movable_objects_surface = pygame.Surface([200, 600], pygame.SRCALPHA, 32)
         movable_objects_surface = movable_objects_surface.convert_alpha()
+
+        myfont = pygame.font.SysFont("notosanscjkkr", 20)
+        label = myfont.render("ITEMS", 1, (100, 0, 50))
+        label2 = myfont.render("TO USE:", 1, (100, 0, 50))
+        movable_objects_surface.blit(label, (43, 30))
+        movable_objects_surface.blit(label2, (35, 60))
 
         self.level_beginning_surface.blit(still_objects_surface,[0,0])
         self.level_beginning_surface.blit(movable_objects_surface, [650, 0])
@@ -79,19 +85,18 @@ class LevelSurface():
         self.still_objects_group.draw(self.level_surface)
         self.movable_objects_group.draw(self.level_surface)
 
-        print("----- created level finished -------")
-
         return self.level_surface
 
 
     def load_objects(self):
 
-        print("-----load objects -------")
-
         current_lvl_objects = self.levels[self.levels.lvl_number == self.number]
-        current_lvl_objects.reset_index(inplace=1)
 
-        print(self.number)
+        if len(current_lvl_objects) == 0:
+            Tk().wm_withdraw()
+            messagebox.showinfo('Oops', 'You have passed all the levels - feel free to create more in levels.csv!')
+
+        first_index = current_lvl_objects.index[0]
 
         still_objects_group = pygame.sprite.Group()
         movable_objects_group = pygame.sprite.Group()
@@ -99,7 +104,8 @@ class LevelSurface():
         still_objects_list = []
         movable_objects_list = []
 
-        for i in range(len(current_lvl_objects)):
+        for i in range(first_index,first_index+len(current_lvl_objects)):
+
             if current_lvl_objects.at[i,'movable']==0:
                 still_objects_list.append(
                     GameObject(self.levels.at[i,'item'],self.levels.at[i,'pos_x'],self.levels.at[i,'pos_y']))
@@ -112,8 +118,8 @@ class LevelSurface():
 
             temp_object = GameObject(still_objects_list[i].type,still_objects_list[i].pos_x,still_objects_list[i].pos_y)
 
-            if still_objects_list[i].type=="BALL":
-                object = ItemBall(temp_object)
+            if still_objects_list[i].type=="WEIGHT":
+                object = ItemWeight(temp_object)
 
             elif still_objects_list[i].type=="BASKETBALL":
                 object = ItemBasketBall(temp_object)
@@ -133,12 +139,13 @@ class LevelSurface():
             still_objects_group.add(object)
             self.all_objects_group.add(object)
 
+
         for i in range(len(movable_objects_list)):
 
             temp_object = GameObject(movable_objects_list[i].type,movable_objects_list[i].pos_x,movable_objects_list[i].pos_y)
 
-            if movable_objects_list[i].type=="BALL":
-                object = ItemBall(temp_object)
+            if movable_objects_list[i].type=="WEIGHT":
+                object = ItemWeight(temp_object)
 
             elif movable_objects_list[i].type=="BASKETBALL":
                 object = ItemBasketBall(temp_object)
@@ -152,9 +159,9 @@ class LevelSurface():
             elif movable_objects_list[i].type == "BRICKS":
                 object = ItemBricks(temp_object)
 
-
             movable_objects_group.add(object)
             self.all_objects_group.add(object)
+
 
         return (still_objects_group,movable_objects_group)
 
@@ -169,11 +176,9 @@ class LevelSurface():
 
     def mouse_clicked(self,mouse):
         if button_play_pos_x + button_size_x > mouse[0] > button_play_pos_x and button_play_pos_y + button_size_y > mouse[1] > button_play_pos_y:
-            #self.button_play.press(self.button_play.title,self)
             return 1
 
         if button_restart_pos_x + button_size_x > mouse[0] > button_restart_pos_x and button_restart_pos_y + button_size_y > mouse[1] > button_restart_pos_y:
-            #self.button_restart.press(self.button_restart.title,self)
             return 2
 
 
@@ -227,3 +232,14 @@ class LevelSurface():
         (self.still_objects_group,self.movable_objects_group) = self.load_objects()
 
 
+    def destroy(self):
+        del self.movable_objects_group
+        del self.still_objects_group
+        del self.all_objects_group
+        del self.level_empty_surface
+        del self.level_beginning_surface
+        del self.level_restart_surface
+        del self.level_surface
+        del self.levels
+        del self.number
+        del self

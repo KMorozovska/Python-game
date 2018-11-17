@@ -50,14 +50,12 @@ class ItemBalloon(GameObject):
             self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y))
 
         if gameObject.type == "BAR":
-            if self.pos_x == gameObject.pos_x - ITEM_BAR_WIDTH / 2:
-                self.pos_y = gameObject.pos_y
-                self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y))
-            if self.pos_x > gameObject.pos_x - ITEM_BAR_WIDTH / 2:
+
+            if self.pos_x >= gameObject.pos_x and self.pos_x <= gameObject.pos_x + ITEM_BAR_WIDTH / 2:
                 gameObject.react_to_collision(self)
                 self.pos_y = gameObject.pos_y
                 self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y))
-            if self.pos_x < gameObject.pos_x - ITEM_BAR_WIDTH / 2:
+            if self.pos_x > gameObject.pos_x + ITEM_BAR_WIDTH/2 and self.pos_x < gameObject.pos_x + ITEM_BAR_WIDTH:
                 gameObject.react_to_collision(self)
                 self.pos_y = gameObject.pos_y
                 self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y))

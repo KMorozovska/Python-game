@@ -20,6 +20,8 @@ class ItemBar(GameObject):
         self.speedy = 0
         self.was_moved = False
         self.already_reacted = False
+        self.left = False
+        self.right = False
 
 
     def move(self):
@@ -41,21 +43,27 @@ class ItemBar(GameObject):
     def react_to_collision(self,gameObject):
 
         if gameObject.type == "BALLOON" and not self.already_reacted:
-            if gameObject.pos_x > self.pos_x - ITEM_BAR_WIDTH/2:
-                self.image = pygame.transform.scale((pygame.image.load(IMAGE_BAR_LEFT_PATH).convert_alpha()),(self.width+10, self.height+10))
-                self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y))
-                self.already_reacted = True
-            if gameObject.pos_x < self.pos_x - ITEM_BAR_WIDTH/2:
-                self.image = pygame.transform.scale((pygame.image.load(IMAGE_BAR_RIGHT_PATH).convert_alpha()),(self.width+10, self.height+10))
-                self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y))
-                self.already_reacted = True
 
-        if gameObject.type == "BALL" and not self.already_reacted:
-            if gameObject.pos_x > self.pos_x - ITEM_BAR_WIDTH/2:
-                self.image = pygame.transform.scale((pygame.image.load(IMAGE_BAR_RIGHT_PATH).convert_alpha()),(self.width+10, self.height+10))
-                self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y))
-                self.already_reacted = True
-            if gameObject.pos_x < self.pos_x - ITEM_BAR_WIDTH/2:
+            if gameObject.pos_x > self.pos_x and gameObject.pos_x < self.pos_x + ITEM_BAR_WIDTH / 2:
                 self.image = pygame.transform.scale((pygame.image.load(IMAGE_BAR_LEFT_PATH).convert_alpha()),(self.width+10, self.height+10))
                 self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y))
                 self.already_reacted = True
+                self.left = True
+            if gameObject.pos_x > self.pos_x + ITEM_BAR_WIDTH / 2 and gameObject.pos_x < self.pos_x + ITEM_BAR_WIDTH:
+                self.image = pygame.transform.scale((pygame.image.load(IMAGE_BAR_RIGHT_PATH).convert_alpha()),(self.width+10, self.height+10))
+                self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y))
+                self.already_reacted = True
+                self.right = True
+
+        if gameObject.type == "WEIGHT" and not self.already_reacted:
+
+            if gameObject.pos_x > self.pos_x and gameObject.pos_x < self.pos_x + ITEM_BAR_WIDTH/2:
+                self.image = pygame.transform.scale((pygame.image.load(IMAGE_BAR_RIGHT_PATH).convert_alpha()),(self.width+10, self.height+10))
+                self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y))
+                self.already_reacted = True
+                self.right = True
+            if gameObject.pos_x > self.pos_x + ITEM_BAR_WIDTH/2 and gameObject.pos_x < self.pos_x + ITEM_BAR_WIDTH:
+                self.image = pygame.transform.scale((pygame.image.load(IMAGE_BAR_LEFT_PATH).convert_alpha()),(self.width+10, self.height+10))
+                self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y))
+                self.already_reacted = True
+                self.left = True

@@ -16,7 +16,7 @@ class ItemBasketBall(GameObject):
         self.image = pygame.transform.scale((pygame.image.load(IMAGE_BASKETBALL_PATH).convert_alpha()),(self.width,self.height))
         self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y))
         self.speedx = 0
-        self.speedy = 1
+        self.speedy = 0.5
         self.was_moved = False
 
     def move(self):
@@ -47,23 +47,22 @@ class ItemBasketBall(GameObject):
     def react_to_collision(self, gameObject):
 
         if gameObject.type == "BRICKS":
-
             self.pos_y = gameObject.pos_y-ITEM_BRICKS_HEIGHT-ITEM_BASKETBALL_HEIGHT/2
+            if abs(self.pos_x-gameObject.pos_x) > abs(self.pos_x-(gameObject.pos_x+ITEM_BRICKS_WIDTH)):
+                self.pos_x += 2
+            else:
+                self.pos_x -= 2
             self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y))
 
-            if self.pos_y == gameObject.pos_y-ITEM_BRICKS_HEIGHT and self.pos_x == gameObject.pos_x+ITEM_BRICKS_WIDTH/2:
-                self.pos_x = gameObject.pos_x+ITEM_BRICKS_WIDTH/2
-                self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y))
-            return True
 
         if gameObject.type == "BAR":
 
             if gameObject.already_reacted:
-                if self.pos_x >= gameObject.pos_x-(ITEM_BAR_WIDTH/2):
-                    self.pos_x += 1
+                if gameObject.right:
+                    self.pos_x += -2
                     self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y))
-                elif self.pos_x < gameObject.pos_x-(ITEM_BAR_WIDTH/2):
-                    self.pos_x += -1
+                if gameObject.left:
+                    self.pos_x += 1
                     self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y))
             else:
                 self.pos_y = gameObject.pos_y - ITEM_BAR_HEIGHT - ITEM_BASKETBALL_HEIGHT/2
