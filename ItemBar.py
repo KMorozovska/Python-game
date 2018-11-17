@@ -1,6 +1,6 @@
 from GameObject import *
 import pygame
-from Constants import IMAGE_BAR_PATH
+from Constants import IMAGE_BAR_PATH, ITEM_BAR_HEIGHT, ITEM_BAR_WIDTH
 
 class ItemBar(GameObject):
 
@@ -8,8 +8,8 @@ class ItemBar(GameObject):
     def __init__(self,gameObject):
         super(GameObject, self).__init__()
         pygame.sprite.Sprite.__init__(self)  # call Sprite intializer
-        self.width = 150
-        self.height = 20
+        self.width = ITEM_BAR_WIDTH
+        self.height = ITEM_BAR_HEIGHT
         self.type = gameObject.type
         self.pos_x = gameObject.pos_x
         self.pos_y = gameObject.pos_y
@@ -35,4 +35,4 @@ class ItemBar(GameObject):
 
     def collide(self,spriteGroup):
         if pygame.sprite.spritecollide(self,spriteGroup,False):
-            print("byla kolizja")
+            print("byla kolizja z poprzeczka")

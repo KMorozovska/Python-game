@@ -31,9 +31,11 @@ class LevelSurface():
         self.button_next = Button(BUTTON_NEXT, 128, 128, 128, button_size_x, button_size_y)
         self.still_objects_group = pygame.sprite.Group()
         self.movable_objects_group = pygame.sprite.Group()
+        self.all_objects_group = pygame.sprite.Group()
         self.level_surface = pygame.Surface([800, 600], pygame.SRCALPHA, 32)
         self.level_beginning_surface = pygame.Surface([800, 600], pygame.SRCALPHA, 32)
         self.level_restart_surface = pygame.Surface([800, 600], pygame.SRCALPHA, 32)
+        self.level_empty_surface = pygame.Surface([800, 600], pygame.SRCALPHA, 32)
         self.passed = False
 
 
@@ -66,9 +68,12 @@ class LevelSurface():
         self.level_beginning_surface.blit(button_restart_surface, [button_restart_pos_x, button_restart_pos_y])
         self.level_beginning_surface.blit(button_next_surface, [button_next_pos_x, button_next_pos_y])
 
+        self.level_empty_surface = self.level_beginning_surface.copy()
+
         still_beginning_objects.draw(self.level_beginning_surface)
 
         self.level_surface = self.level_beginning_surface.copy()
+
         self.level_restart_surface = self.level_beginning_surface.copy()
         moving_beginning_objects.draw(self.level_restart_surface)
 
@@ -127,6 +132,7 @@ class LevelSurface():
                 object = ItemBasket(temp_object)
 
             still_objects_group.add(object)
+            self.all_objects_group.add(object)
 
         for i in range(len(movable_objects_list)):
 
@@ -149,6 +155,7 @@ class LevelSurface():
 
 
             movable_objects_group.add(object)
+            self.all_objects_group.add(object)
 
         return (still_objects_group,movable_objects_group)
 
@@ -186,29 +193,22 @@ class LevelSurface():
 
     def move_everything(self):
 
-        print("powinno sie ruszac caly czas")
-
-        all_objects_group = pygame.sprite.Group()
-
         still_checking = True
 
-        for item in self.still_objects_group:
-            if (item.type != "BASKET"):
-                all_objects_group.add(item)
+        for item in self.all_objects_group:
+            self.all_objects_group.remove(item)
 
-        for item in self.movable_objects_group:
-            all_objects_group.add(item)
+            if item.collide(self.all_objects_group):
+                collided_object = item.collide(self.all_objects_group)
+                item.react_to_collision(collided_object[0])
 
-        for item in all_objects_group:
-            all_objects_group.remove(item)
-            if item.collide(all_objects_group):
-                item.react_to_collision(id(item))
             item.move()
-            if(item.type == "BASKETBALL"):
+            if item.type == "BASKETBALL":
                 still_checking = item.move()
-            all_objects_group.add(item)
 
-        return all_objects_group, still_checking
+            self.all_objects_group.add(item)
+
+        return still_checking
 
 
     def restart(self):

@@ -1,6 +1,6 @@
 from GameObject import *
 import pygame
-from Constants import IMAGE_BRICKS_PATH
+from Constants import IMAGE_BRICKS_PATH, ITEM_BRICKS_WIDTH, ITEM_BRICKS_HEIGHT
 
 class ItemBricks(GameObject):
 
@@ -8,8 +8,8 @@ class ItemBricks(GameObject):
     def __init__(self,gameObject):
         super(GameObject, self).__init__()
         pygame.sprite.Sprite.__init__(self)  # call Sprite intializer
-        self.width = 100
-        self.height = 30
+        self.width = ITEM_BRICKS_WIDTH
+        self.height = ITEM_BRICKS_HEIGHT
         self.type = gameObject.type
         self.pos_x = gameObject.pos_x
         self.pos_y = gameObject.pos_y
@@ -35,4 +35,4 @@ class ItemBricks(GameObject):
 
     def collide(self,spriteGroup):
         if pygame.sprite.spritecollide(self,spriteGroup,False):
-            print("byla kolizja")
+            print("byla kolizja z cegielkami")

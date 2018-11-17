@@ -16,13 +16,20 @@ class ItemBalloon(GameObject):
         self.depth = gameObject.depth
         self.image = pygame.transform.scale((pygame.image.load(IMAGE_BALLOON_PATH).convert_alpha()),(self.width,self.height))
         self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y))
-        self.speedx = 1
-        self.speedy = 0
+        self.speedx = 0
+        self.speedy = 1
         self.was_moved = False
 
 
     def move(self):
         print("ruszam sie - balloon")
+
+        if self.pos_y <= 0:
+            return
+
+        self.pos_x += self.speedx
+        self.pos_y -= self.speedy
+        self.rect = self.image.get_rect(topleft=(self.pos_x, self.pos_y))
 
 
     def update(self):

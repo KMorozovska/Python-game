@@ -43,7 +43,7 @@ while run:
             mouse_held = False
             pos = pygame.mouse.get_pos()
 
-            if welcome.button_clicked(pos):
+            if not started and welcome.button_clicked(pos):
                 level_surface = current_level.create_level()
                 mainWindow.fill((170, 170, 240))
                 mainWindow.blit(level_surface, [0, 0])
@@ -62,14 +62,13 @@ while run:
                         checking_level = True
                     else:
                         Tk().wm_withdraw()
-                        messagebox.showinfo('Oops', 'Please use all of the given items')
+                        messagebox.showinfo('Oops', 'Please place all of the given items in the level area')
 
         if event.type == pygame.MOUSEBUTTONDOWN:
 
             if started:
                 for item in current_level.movable_objects_group:
                     if item.check_mouse_collision(event.pos):
-                        print("mouse held - true")
                         mouse_held = True
                         break
 
@@ -78,11 +77,11 @@ while run:
             mainWindow.blit(current_level.level_surface,[0,0])
 
     if checking_level:
-        (all_objects_group,checking_level) = current_level.move_everything()
-        current_level.movable_objects_group.clear(mainWindow, current_level.level_beginning_surface)
-        current_level.still_objects_group.clear(mainWindow, current_level.level_beginning_surface)
-        all_objects_group.clear(mainWindow, current_level.level_beginning_surface)
-        all_objects_group.draw(mainWindow)
+        checking_level = current_level.move_everything()
+        current_level.movable_objects_group.clear(mainWindow, current_level.level_empty_surface)
+        current_level.still_objects_group.clear(mainWindow, current_level.level_empty_surface)
+        current_level.all_objects_group.clear(mainWindow, current_level.level_empty_surface)
+        current_level.all_objects_group.draw(mainWindow)
 
     pygame.display.update()
 
