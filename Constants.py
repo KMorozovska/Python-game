@@ -1,21 +1,27 @@
+import os
 
-TITLE_PATH = "/home/kasia/Pulpit/studia MINI/Python/obrazki/title1.png"
+main_dir = os.path.split(os.path.abspath(__file__))[0]
+data_dir = os.path.join(main_dir, "sources")
+pict_dir = os.path.join(data_dir, "pictures")
+sound_dir = os.path.join(data_dir, "sounds")
 
-LEVEL_SURFACE_PATH = "/home/kasia/Pulpit/studia MINI/Python/obrazki/brick_wall.jpeg"
-LEVELS_CSV_PATH = "/home/kasia/Pulpit/studia MINI/Python/levels.csv"
+TITLE_PATH = os.path.join(pict_dir, "title1.png")
 
-IMAGE_WEIGHT_PATH = "/home/kasia/Pulpit/studia MINI/Python/obrazki/weight.png"
-IMAGE_BALLOON_PATH = "/home/kasia/Pulpit/studia MINI/Python/obrazki/balloon.png"
-IMAGE_BAR_PATH = "/home/kasia/Pulpit/studia MINI/Python/obrazki/bar.png"
-IMAGE_BAR_RIGHT_PATH = "/home/kasia/Pulpit/studia MINI/Python/obrazki/bar_right.png"
-IMAGE_BAR_LEFT_PATH = "/home/kasia/Pulpit/studia MINI/Python/obrazki/bar_left.png"
-IMAGE_BASKET_PATH = "/home/kasia/Pulpit/studia MINI/Python/obrazki/basket.png"
-IMAGE_BRICKS_PATH = "/home/kasia/Pulpit/studia MINI/Python/obrazki/bricks.png"
-IMAGE_BASKETBALL_PATH = "/home/kasia/Pulpit/studia MINI/Python/obrazki/basketball.png"
+LEVEL_SURFACE_PATH = os.path.join(pict_dir, "brick_wall.jpeg")
+LEVELS_CSV_PATH = os.path.join(data_dir, "levels.csv")
 
-SOUND_WINNING_PATH = "/home/kasia/Pulpit/studia MINI/Python/dzwieki/Ta Da.wav"
-SOUND_FAIL_PATH = "/home/kasia/Pulpit/studia MINI/Python/dzwieki/Sad_Trombone.wav"
-SOUND_WELCOME_PATH = "/home/kasia/Pulpit/studia MINI/Python/dzwieki/Computer_Magic.wav"
+IMAGE_WEIGHT_PATH = os.path.join(pict_dir, "weight.png")
+IMAGE_BALLOON_PATH = os.path.join(pict_dir, "balloon.png")
+IMAGE_BAR_PATH = os.path.join(pict_dir, "bar.png")
+IMAGE_BAR_RIGHT_PATH = os.path.join(pict_dir, "bar_right.png")
+IMAGE_BAR_LEFT_PATH = os.path.join(pict_dir, "bar_left.png")
+IMAGE_BASKET_PATH = os.path.join(pict_dir, "basket.png")
+IMAGE_BRICKS_PATH = os.path.join(pict_dir, "bricks.png")
+IMAGE_BASKETBALL_PATH = os.path.join(pict_dir, "basketball.png")
+
+SOUND_WINNING_PATH = os.path.join(sound_dir, "Ta Da.wav")
+SOUND_FAIL_PATH = os.path.join(sound_dir, "Sad_Trombone.wav")
+SOUND_WELCOME_PATH = os.path.join(sound_dir, "Computer_Magic.wav")
 
 
 BUTTON_PLAY = "Start!"
